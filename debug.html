@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Canvas Debug</title>
+  <style>
+    /* Ensure the canvas fills the viewport, no other elements. */
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+    #debugCanvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      /* Force it on top, so it's definitely visible */
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 999999;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="debugCanvas"></canvas>
+
+  <script>
+    // On page load, fill the entire canvas with red, then draw a black circle.
+    function debugDraw() {
+      const c = document.getElementById('debugCanvas');
+      const ctx = c.getContext('2d');
+      c.width  = window.innerWidth;
+      c.height = window.innerHeight;
+
+      // Big red background
+      ctx.fillStyle = 'red';
+      ctx.fillRect(0, 0, c.width, c.height);
+
+      // Black circle in center
+      ctx.fillStyle = 'black';
+      ctx.beginPath();
+      ctx.arc(c.width / 2, c.height / 2, 50, 0, 2 * Math.PI);
+      ctx.fill();
+    }
+
+    window.addEventListener('load', debugDraw);
+    window.addEventListener('resize', debugDraw);
+  </script>
+</body>
+</html>

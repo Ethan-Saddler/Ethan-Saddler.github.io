@@ -6,31 +6,30 @@
   <title>Ethan Saddler</title>
   <!-- CSS -->
   <link rel="stylesheet" href="style.css" />
-  <!-- A clean, modern font -->
-  <link rel="preconnect" href="https://fonts.gstatic.com" />
+  <!-- Modern font -->
   <link
     href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700&display=swap"
     rel="stylesheet"
   />
 </head>
 <body>
-  <!-- Preloader (transparent so we see the gradient behind the circle) -->
+  <!-- Full-screen canvas for Snake (hidden initially) -->
+  <canvas id="snakeGame" class="fade-in"></canvas>
+  
+  <!-- Preloader -->
   <div class="preloader">
     <div class="loader-circle"></div>
   </div>
 
-  <!-- Main Content (initially hidden, will fade-in after preloader) -->
+  <!-- Main Content -->
   <main class="fade-in">
     <header class="hero-section">
       <h1 class="hero-title">Hi, I’m <span>Ethan Saddler</span></h1>
       <!-- <p class="hero-subtitle">Student and Software Engineer</p> -->
     </header>
 
-    <!-- About / Bio Section -->
     <section class="bio-section">
-      <p>
-		I am a software engineer and student @ Georgia Tech
-		</p>
+      <p>I am a software engineer and student @ Georgia Tech</p>
       <div class="cta-buttons">
         <a href="resume.pdf" download class="btn resume-btn">Resume</a>
         <a
@@ -51,44 +50,13 @@
         </a>
       </div>
     </section>
-
-    <!-- Education & Experience Section -->
-    <!-- <section class="timeline-section">
-      <h2>Education & Experience</h2>
-      <div class="timeline">
-        <div class="timeline-item">
-          <h3>Incoming Software Engineering Intern @ Meta</h3>
-          <span>Summer 2025</span>
-          <p>
-			TBD!
-          </p>
-        </div>
-		<div class="timeline-item">
-			<h3>Software Engineering Intern @ AstraZeneca</h3>
-			<span>Summer 2024</span>
-			<p>
-				Worked on fixing EDI pipelines in Python and Java, improving performance and reducing false errors. 
-				Teamed up with SnapLogic to build tools for parsing financial docs and made error handling more reliable for contractor transactions.
-			</p>
-		  </div>
-        <div class="timeline-item">
-          <h3>Georgia Institute of Technology</h3>
-          <span>2022 - Present</span>
-          <p>
-			B.S. in Computer Science - 3.93 GPA
-          </p>
-        </div>
-        <dd more timeline items as needed -->
-      </div>
-    </section>
   </main>
 
-  <!-- Optional Footer -->
-  <!-- <footer class="site-footer">
-    <p>&copy; <span id="year"></span> Ethan Saddler</p>
-  </footer> -->
+  <!-- Restart button (hidden initially) -->
+  <button id="restartBtn" class="restart-btn" style="display: none;">
+    Restart
+  </button>
 
-  <!-- JS -->
   <script src="script.js"></script>
 </body>
 </html>
