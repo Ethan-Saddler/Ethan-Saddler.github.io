@@ -15,11 +15,17 @@ document.addEventListener('DOMContentLoaded', () => {
         snakeCanvas.classList.add('loaded');
 
         // Start the game
-        initGame();
+        if (!isMobileDevice()) {
+          initGame();
+        }
       }, 500);
     }, 1200);
   });
 });
+
+function isMobileDevice() {
+  return /Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+}
 
 // ---------------- SNAKE GAME ----------------
 const canvas = document.getElementById('snakeGame');
@@ -627,7 +633,9 @@ document.addEventListener('keydown', e => {
 
 // On resize => re-init
 window.addEventListener('resize', () => {
-  initGame();
+  if (!isMobileDevice()) {
+    initGame();
+  }
 });
 
 // Dynamically resize cellSize if needed
