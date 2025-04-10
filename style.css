@@ -17,7 +17,6 @@ body {
   );
   background-size: 600% 600%;
   animation: gradientShift 18s ease infinite;
-  /* no z-index needed, it's the root stacking context */
 }
 
 /* Keyframes for background movement */
@@ -41,8 +40,8 @@ a {
   height: 100%;
   pointer-events: none;
   background: transparent;
-  z-index: 1; /* ensure it’s above the body’s background */
-} 
+  z-index: 1;
+}
 
 /* Preloader */
 .preloader {
@@ -104,6 +103,7 @@ main {
 }
 .hero-title {
   font-size: 2.5rem;
+  font-family: 'Montserrat';
   font-weight: 700;
   margin-bottom: 0.5rem;
 }
@@ -112,6 +112,7 @@ main {
 }
 .hero-subtitle {
   font-size: 1.2rem;
+  font-family: 'Montserrat';
   font-weight: 300;
   margin-bottom: 2rem;
 }
@@ -119,6 +120,7 @@ main {
 /* Bio Section */
 .bio-section {
   margin-top: 2rem;
+  font-family: 'Montserrat';
   font-size: 1.1rem;
   font-weight: 300;
   line-height: 1.6;
@@ -137,6 +139,7 @@ main {
   border-radius: 4px;
   font-size: 0.9rem;
   font-weight: 500;
+  font-family: 'Montserrat';
   letter-spacing: 0.5px;
   cursor: pointer;
   transition: transform 0.2s, background-color 0.2s, color 0.2s;
@@ -150,32 +153,39 @@ main {
   color: #fff;
 }
 
-/* Bigger restart button with white text + black outline, no border */
 .restart-btn {
   position: fixed;
   bottom: 2rem;
   left: 50%;
   transform: translateX(-50%);
-  font-family: 'Montserrat', sans-serif;
-  font-size: 1.2rem; /* bigger */
+  font-family: 'Montserrat';
+  font-size: 2rem;
+  padding: 1rem 2rem;
   background: none;
   border: none;
   cursor: pointer;
-  color: #fff;
-  /* Simple text stroke effect: thin black “halo” */
-  text-shadow:
-    -1px  0   #000,
-     1px  0   #000,
-     0    1px #000,
-     0   -1px #000;
+  color: #000000;
+
+  /* Thicker and smoother text stroke */
+  /* text-shadow:
+    -2px -2px #000,
+    -2px  0   #000,
+    -2px  2px #000,
+     0   -2px #000,
+     0    2px #000,
+     2px -2px #000,
+     2px  0   #000,
+     2px  2px #000; */
+
   z-index: 2;
   transition: opacity 0.2s ease, transform 0.2s ease;
 }
+
 .restart-btn:hover {
   transform: translateX(-50%) scale(1.08);
 }
 
-/* (Optional) Timeline Section */
+/* (Optional) Timeline Section, if needed */
 .timeline-section {
   margin-top: 4rem;
   text-align: left;
