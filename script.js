@@ -48,8 +48,7 @@ let isGameOver = false;
 let isGrowing = false;
 let growthProgress = 0;
 let growthSpeed = 0.1; // How fast the growth animation happens
-let growthTail = null; // Store the last tail position for growth animation
-let segmentHistory = []; // Track previous positions for smooth turns
+let growthTail = null; // Store the last tail position & vector for growth animation
 
 // Movement timing
 let moveInterval = 0.1; // seconds per move
@@ -84,7 +83,6 @@ function initGame() {
   isGrowing = false;
   growthProgress = 0;
   growthTail = null;
-  segmentHistory = [];
 
   // Setup snake off-screen
   setupIntroSpawn();
@@ -159,23 +157,17 @@ function gameLoop(timestamp) {
   if (isGrowing) {
     growthProgress += delta / growthSpeed;
     if (growthProgress >= 1) {
-      // Complete growth by adding the segment permanently
-      if (growthTail) {
-        // When growth completes, add position from history for smoother transition
-        const newSegment = { 
-          x: growthTail.x, 
-          y: growthTail.y,
-          direction: growthTail.direction 
-        };
-        
-        snake.push(newSegment);
-        snakeOld.push({...newSegment}); // Clone to prevent reference issues
-        
-        // Apply last few positions from history to ensure smooth motion
-        applyHistoryToSegment(snake.length - 1);
-      }
-      growthProgress = 0;
+      // Finish growth – attach the new segment exactly one cell beyond the old tail
+      const newSegment = {
+        x: growthTail.x - growthTail.dx,
+        y: growthTail.y - growthTail.dy,
+        direction: growthTail.direction
+      };
+      snake.push(newSegment);
+      snakeOld.push({ ...newSegment });
+
       isGrowing = false;
+      growthProgress = 0;
       growthTail = null;
     }
   }
@@ -200,10 +192,7 @@ function gameLoop(timestamp) {
   // Normal or Intro logic
   while (accumTime >= moveInterval && !isGameOver) {
     accumTime -= moveInterval;
-    
-    // Before updating, store current snake positions for history
-    updateSegmentHistory();
-    
+
     copySnake(snakeOld, snake); // store old positions for smooth interpolation
 
     // Apply pending direction change
@@ -220,54 +209,17 @@ function gameLoop(timestamp) {
   draw(accumTime / moveInterval);
 }
 
-// Keep track of previous positions for smooth transitions
-function updateSegmentHistory() {
-  // Store last 10 frames of history (adjust as needed)
-  if (segmentHistory.length > 10) {
-    segmentHistory.shift();
-  }
-  
-  // Create a deep copy of current snake state
-  const snapshot = [];
-  for (let i = 0; i < snake.length; i++) {
-    snapshot.push({...snake[i]});
-  }
-  
-  segmentHistory.push(snapshot);
-}
-
-// Apply history data to newly added segment for smooth transitions
-function applyHistoryToSegment(segmentIndex) {
-  if (segmentHistory.length < 2) return;
-  
-  // Get the last few frames of history for smooth transition
-  const lastFrames = segmentHistory.slice(-5);
-  
-  // Apply the direction from history to ensure it follows the right path
-  for (let i = 0; i < lastFrames.length; i++) {
-    const historyFrame = lastFrames[i];
-    // Make sure the history frame has enough segments
-    if (historyFrame.length > segmentIndex - 1) {
-      const prevSegDirection = historyFrame[segmentIndex - 1].direction;
-      // Update the direction of the newly added segment to match the flow
-      if (i === lastFrames.length - 1 && segmentIndex < snake.length) {
-        snake[segmentIndex].direction = prevSegDirection;
-      }
-    }
-  }
-}
-
 // ---------------------------------
 // INTRO UPDATE (SLITHER IN)
 // ---------------------------------
 function introUpdate() {
   // Move head in chosen direction
-  const head = { 
-    x: snake[0].x, 
+  const head = {
+    x: snake[0].x,
     y: snake[0].y,
     direction: direction
   };
-  
+
   switch (direction) {
     case 'LEFT':  head.x -= 1; break;
     case 'RIGHT': head.x += 1; break;
@@ -279,7 +231,7 @@ function introUpdate() {
 
   // Update directions for all segments (passing the turn along the body)
   for (let i = 1; i < snake.length; i++) {
-    snake[i].direction = snakeOld[i-1].direction;
+    snake[i].direction = snakeOld[i - 1].direction;
   }
 
   // Grow until we hit the target length
@@ -312,12 +264,12 @@ function isSnakeFullyOnScreen() {
 // NORMAL UPDATE
 // ---------------------------------
 function normalUpdate() {
-  const head = { 
-    x: snake[0].x, 
+  const head = {
+    x: snake[0].x,
     y: snake[0].y,
     direction: direction // Store the current direction
   };
-  
+
   switch (direction) {
     case 'LEFT':  head.x -= 1; break;
     case 'RIGHT': head.x += 1; break;
@@ -346,54 +298,30 @@ function normalUpdate() {
 
   // Update directions for all segments (passing the turn along the body)
   for (let i = 1; i < snake.length; i++) {
-    snake[i].direction = snakeOld[i-1].direction;
+    snake[i].direction = snakeOld[i - 1].direction;
   }
 
-  // Check food
+  /* ---------- FOOD ---------- */
   if (head.x === food.x && head.y === food.y) {
-    // If already growing, complete that growth first
-    if (isGrowing) {
-      if (growthTail) {
-        // Add the segment permanently
-        snake.push({ 
-          x: growthTail.x, 
-          y: growthTail.y,
-          direction: growthTail.direction 
-        });
-        
-        // Apply history for smooth behavior
-        applyHistoryToSegment(snake.length - 1);
-      }
-    }
-    
-    // Store the tail position before popping
-    if (snake.length > 0) {
-      const tail = snake[snake.length - 1];
-      // Use second-to-last direction to ensure proper continuation
-      let tailDirection = tail.direction;
-      if (snake.length > 1) {
-        // Get a more accurate direction based on the previous segment
-        const prevSeg = snake[snake.length - 2];
-        if (prevSeg.x > tail.x) tailDirection = 'LEFT';
-        else if (prevSeg.x < tail.x) tailDirection = 'RIGHT';
-        else if (prevSeg.y > tail.y) tailDirection = 'UP';
-        else if (prevSeg.y < tail.y) tailDirection = 'DOWN';
-      }
-      
-      growthTail = { 
-        x: tail.x, 
-        y: tail.y,
-        direction: tailDirection
-      };
-    }
-    
-    // Start growth animation
+    const tail = snake[snake.length - 1];
+    const prevTail = snake.length > 1 ? snake[snake.length - 2] : tail;
+
+    const dx = tail.x - prevTail.x;
+    const dy = tail.y - prevTail.y;
+
+    let tailDir = 'RIGHT';
+    if (dx === 1) tailDir = 'RIGHT';
+    if (dx === -1) tailDir = 'LEFT';
+    if (dy === 1) tailDir = 'DOWN';
+    if (dy === -1) tailDir = 'UP';
+
+    growthTail = { x: tail.x, y: tail.y, direction: tailDir, dx, dy };
     isGrowing = true;
     growthProgress = 0;
-    
+
     spawnFood();
   } else if (!isGrowing) {
-    // Only remove the last segment if we're not in the middle of growing
+    // Only remove tail if we're not growing
     snake.pop();
   }
 }
@@ -419,142 +347,88 @@ function drawSnake(interp) {
 
   // Create interpolated points array
   let points = [];
-  
+
   // For each segment, calculate its interpolated position
   for (let i = 0; i < snake.length; i++) {
     const sOld = snakeOld[i];
     const sNew = snake[i];
-    
+
     if (!sOld || !sNew) continue;
 
     const x = (sOld.x + (sNew.x - sOld.x) * interp) * cellSize + cellSize / 2;
     const y = (sOld.y + (sNew.y - sOld.y) * interp) * cellSize + cellSize / 2;
-    
-    // Store point with direction
-    points.push({ 
-      x, 
-      y, 
-      direction: sNew.direction,
-      isLast: (i === snake.length - 1)
+
+    points.push({ x, y, direction: sNew.direction, isLast: i === snake.length - 1 });
+  }
+
+  /* ---------- GROWTH ANIMATION ---------- */
+  if (isGrowing && growthTail) {
+    const tailCenterX = growthTail.x * cellSize + cellSize / 2;
+    const tailCenterY = growthTail.y * cellSize + cellSize / 2;
+
+    points.push({
+      x: tailCenterX - growthTail.dx * cellSize * (1 - growthProgress),
+      y: tailCenterY - growthTail.dy * cellSize * (1 - growthProgress),
+      isLast: true
     });
   }
 
-  // Add growth animation tail segment if growing
-  if (isGrowing && growthTail) {
-    const lastSegment = points.length > 0 ? points[points.length - 1] : null;
-    
-    if (lastSegment) {
-      // Get the direction of the segment that the tail should follow
-      let tailDir = growthTail.direction;
-      
-      // Calculate tail position based on growth direction
-      const tailX = growthTail.x * cellSize + cellSize / 2;
-      const tailY = growthTail.y * cellSize + cellSize / 2;
-      
-      // Calculate animation target position (one cell away in tail direction)
-      let targetX = tailX;
-      let targetY = tailY;
-      
-      // The opposite of the tail's direction is the growth direction
-      switch (tailDir) {
-        case 'RIGHT': targetX -= cellSize; break;
-        case 'LEFT':  targetX += cellSize; break;
-        case 'DOWN':  targetY -= cellSize; break;
-        case 'UP':    targetY += cellSize; break;
-      }
-      
-      // Interpolate between current tail and target position based on growth progress
-      const animTailX = targetX + (tailX - targetX) * growthProgress;
-      const animTailY = targetY + (tailY - targetY) * growthProgress;
-      
-      // Add the growing segment with correct orientation
-      points.push({ 
-        x: animTailX,
-        y: animTailY, 
-        direction: tailDir,
-        isLast: true,
-        isGrowing: true
-      });
-    }
-  }
-
-  // Draw the snake using spline curve
   drawSplineSnake(points);
 }
 
 // Alternative approach - stable curves with fixed radius corners
 function drawSplineSnake(points) {
   if (points.length < 2) return;
-  
+
   const cornerRadius = cellSize * 0.5; // Fixed radius for all corners
-  
+
   ctx.save();
   ctx.lineWidth = cellSize * 0.9;
-  ctx.lineCap = "round";
-  ctx.lineJoin = "round";
-  ctx.strokeStyle = "#222";
-  ctx.fillStyle = "#222";
-  
-  // Draw the path with rounded corners
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  ctx.strokeStyle = '#222';
+  ctx.fillStyle = '#222';
+
   ctx.beginPath();
-  
-  // Start at the first point
-  if (points.length >= 2) {
-    // Move to the start point
-    ctx.moveTo(points[0].x, points[0].y);
-    
-    // For each segment after the first
-    for (let i = 1; i < points.length; i++) {
-      const current = points[i];
-      const previous = points[i-1];
-      
-      // Calculate the direction vector
-      const dx = current.x - previous.x;
-      const dy = current.y - previous.y;
-      
-      // Normalize and scale to create a fixed-radius arc
-      const length = Math.sqrt(dx * dx + dy * dy);
-      
-      // If we're at a corner point and there's a next point
-      if (i < points.length - 1 && length > 0) {
-        const next = points[i+1];
-        
-        // Calculate next segment direction
-        const dx2 = next.x - current.x;
-        const dy2 = next.y - current.y;
-        const length2 = Math.sqrt(dx2 * dx2 + dy2 * dy2);
-        
-        // Check if this is actually a corner (direction change)
-        const isCorner = Math.abs(dx * dx2 + dy * dy2) < length * length2 * 0.9;
-        
-        if (isCorner && length2 > 0) {
-          // Draw line to point before the corner
-          ctx.lineTo(
-            current.x - (dx / length) * cornerRadius,
-            current.y - (dy / length) * cornerRadius
-          );
-          
-          // Use a simple arc for the corner - this creates a stable curve
-          ctx.arcTo(
-            current.x, current.y,
-            current.x + (dx2 / length2) * cornerRadius,
-            current.y + (dy2 / length2) * cornerRadius,
-            cornerRadius
-          );
-        } else {
-          // Not a corner or no next point, just draw a line
-          ctx.lineTo(current.x, current.y);
-        }
+  ctx.moveTo(points[0].x, points[0].y);
+
+  for (let i = 1; i < points.length; i++) {
+    const current = points[i];
+    const previous = points[i - 1];
+    const dx = current.x - previous.x;
+    const dy = current.y - previous.y;
+    const length = Math.sqrt(dx * dx + dy * dy);
+
+    if (i < points.length - 1 && length > 0) {
+      const next = points[i + 1];
+      const dx2 = next.x - current.x;
+      const dy2 = next.y - current.y;
+      const length2 = Math.sqrt(dx2 * dx2 + dy2 * dy2);
+      const isCorner = Math.abs(dx * dx2 + dy * dy2) < length * length2 * 0.9;
+
+      if (isCorner && length2 > 0) {
+        ctx.lineTo(
+          current.x - (dx / length) * cornerRadius,
+          current.y - (dy / length) * cornerRadius
+        );
+        ctx.arcTo(
+          current.x, current.y,
+          current.x + (dx2 / length2) * cornerRadius,
+          current.y + (dy2 / length2) * cornerRadius,
+          cornerRadius
+        );
       } else {
-        // Last point or very short segment, just draw a line
         ctx.lineTo(current.x, current.y);
       }
+    } else {
+      ctx.lineTo(current.x, current.y);
     }
   }
-  
+
   ctx.stroke();
   ctx.restore();
 }
+
 // ---------------------------------
 // GAME OVER => RETRACT
 // ---------------------------------
@@ -580,7 +454,7 @@ function spawnFood() {
   // Make food spawn below the buttons
   const minX = 2;
   const maxX2 = maxX - 3;
-  const minY = Math.ceil(offsetY / cellSize); // This line is key
+  const minY = Math.ceil(offsetY / cellSize);
   const maxY2 = maxY - 3;
 
   const safeMaxX = Math.max(minX, maxX2);
@@ -593,15 +467,12 @@ function spawnFood() {
 function copySnake(target, source) {
   target.length = 0;
   for (let seg of source) {
-    target.push({ 
-      x: seg.x, 
-      y: seg.y,
-      direction: seg.direction 
-    });
+    target.push({ x: seg.x, y: seg.y, direction: seg.direction });
   }
 }
 
 // Restart
+
 document.getElementById('restartBtn').addEventListener('click', initGame);
 
 // Direction controls
