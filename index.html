@@ -2,61 +2,180 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Ethan Saddler</title>
-  <!-- CSS -->
-  <link rel="stylesheet" href="style.css" />
-  <!-- Modern font -->
-  <link
-    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700&display=swap"
-    rel="stylesheet"
-  />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ---------- Light ---------- */
+    :root {
+      --bg: #ffffff;
+      --text: #33343f;
+      --accent: #2563eb;
+      --muted: #e5e7eb;
+      --line: #f3f4f6;
+    }
+
+    /* ---------- Dark ---------- */
+    body.dark {
+      --bg: #0f0f0f;
+      --text: #e5e7eb;
+      --accent: #3b82f6;
+      --muted: #374151;
+      --line: #1f2937;
+    }
+
+    /* ---------- Reset/base ---------- */
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{
+      font-family:'Inter',sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      line-height:1.6;
+      display:flex;
+      justify-content:center;
+      transition:background .3s ease,color .3s ease;
+    }
+
+    .container{max-width:720px;width:88%;padding:3rem 0 4rem;}
+
+    header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:3rem;
+    }
+    h2{font-size:1.5rem;font-weight:600;}
+
+    .theme-switch{
+      position:relative;
+      width:54px;
+      height:28px;
+      padding:3px;
+      border:none;
+      background:var(--muted);
+      border-radius:9999px;
+      cursor:pointer;
+      transition:background .3s ease;
+      display:flex;
+      align-items:center;
+    }
+    .thumb{
+      width:22px;height:22px;
+      background:var(--bg);
+      border-radius:50%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      position:relative;
+      transition:transform .35s cubic-bezier(.4,0,.2,1),background .3s ease;
+      color:var(--text);
+      font-size:0.7rem;
+    }
+    .thumb::before,
+    .thumb::after{
+      position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+      transition:opacity .25s ease;
+      font-size:0.75rem;
+    }
+    .thumb::before {
+      content: "\2600";
+      opacity: 1;
+      font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "EmojiOne Color", sans-serif;
+    }
+    .thumb::after {
+      content: "\1F319";
+      opacity: 0;
+      font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "EmojiOne Color", sans-serif;
+    }
+
+    /* dark mode adjustments */
+    body.dark .theme-switch{background:var(--accent);}
+    body.dark .thumb{transform:translateX(26px);} /* slide right */
+    body.dark .thumb::before{opacity:0;}
+    body.dark .thumb::after{opacity:1;}
+
+    /* subtle hover */
+    .theme-switch:hover .thumb{box-shadow:0 0 0 4px rgba(0,0,0,0.05);}  
+
+    /* ---------- Sections & copy ---------- */
+    :root {
+      --line: #d1d5db;
+    }
+    body.dark {
+      --line: #4b5563;
+    }
+    section {
+      padding: 2.5rem 0;
+      border-top: 1px solid var(--line);
+      transition: border-color .3s ease; 
+    }
+    section:first-of-type{border-top:none;} /* no line above first */
+    h1{font-size:2.2rem;font-weight:600;margin-bottom:1rem;}
+    section p{margin-bottom:1.5rem;}
+
+    /* ---------- Social links ---------- */
+    .links{display:flex;flex-direction:column;gap:1rem;margin-top:1rem;}
+    .links a{color:var(--accent);text-decoration:none;font-weight:500;width:max-content;position:relative;}
+    .links a::after{content:'\2197';margin-left:4px;font-size:0.85em;}
+    .links a:hover{text-decoration:underline;}
+
+    /* ---------- Experience section ---------- */
+    .experience h3{font-size:0.95rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin:0 0 1rem;color:var(--text);} 
+    .exp-list{list-style:none;padding-left:0;}
+    .exp-list li{margin-bottom:.85rem;}
+
+    /* ---------- Footer ---------- */
+    footer{margin-top:4rem;font-size:0.8rem;color:var(--text);opacity:0.6;}
+  </style>
 </head>
 <body>
-  <!-- Full-screen canvas for Snake (hidden initially) -->
-  <canvas id="snakeGame" class="fade-in"></canvas>
-  
-  <!-- Preloader -->
-  <div class="preloader">
-    <div class="loader-circle"></div>
-  </div>
-
-  <!-- Main Content -->
-  <main class="fade-in">
-    <header class="hero-section">
-      <h1 class="hero-title">Hi, I’m <span>Ethan Saddler</span></h1>
-      <!-- <p class="hero-subtitle">Student and Software Engineer</p> -->
+  <div class="container">
+    <header>
+      <h2>ethan saddler</h2>
+      <button id="theme-toggle" aria-label="Toggle light/dark mode" class="theme-switch">
+        <span class="thumb"></span>
+      </button>
     </header>
 
-    <section class="bio-section">
-      <p>I am a software engineer and student @ Georgia Tech</p>
-      <div class="cta-buttons">
-        <a href="resume.pdf" download class="btn resume-btn">Resume</a>
-        <a
-          href="https://www.linkedin.com/in/ethansaddler/"
-          target="_blank"
-          rel="noopener"
-          class="btn social-btn"
-        >
-          LinkedIn
-        </a>
-        <a
-          href="https://github.com/Ethan-Saddler"
-          target="_blank"
-          rel="noopener"
-          class="btn social-btn"
-        >
-          GitHub
-        </a>
+    <section id="about">
+      <h1>👋</h1>
+      <p>I am a Computer Science student concentrating in ML and Networking in my third year at Georgia Tech. This summer I am heading over to the PNW to intern at Meta, where I'll be working on [tbd]. Feel free to reach out or connect with me.</p>
+      <p>My résumé is [updating]</p>
+      <!-- <a href=".pdf" target="_blank" rel="noopener" style="color:var(--accent);font-weight:500;">here</a> -->
+    </section>
+
+    <section id="experience" class="experience">
+      <h3>experience</h3>
+      <ul class="exp-list">
+        <li>present -> incoming swe intern @ meta</li>
+        <li>2024 -> swe intern @ astrazeneca</li>
+      </ul>
+    </section>
+
+    <section id="links">
+      <h3 style="font-size:0.95rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin:0 0 1rem;color:var(--text);">connect</h3>
+      <div class="links">
+        <a href="https://www.linkedin.com/in/ethansaddler/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://github.com/Ethan-Saddler" target="_blank" rel="noopener">GitHub</a>
+        <a href="mailto:ethansaddlerm@email.com">Email</a>
       </div>
     </section>
-  </main>
 
-  <!-- Restart button (hidden initially) -->
-  <button id="restartBtn" class="restart-btn" style="display: none;">
-    restart
-  </button>
+    <footer>© 2025 Ethan Saddler</footer>
+  </div>
 
-  <script src="script.js"></script>
+<script>
+  (function(){
+    const toggleBtn=document.getElementById('theme-toggle');
+    const stored=localStorage.getItem('theme');
+    if(stored==='dark') document.body.classList.add('dark');
+
+    toggleBtn.addEventListener('click',()=>{
+      const isDark=document.body.classList.toggle('dark');
+      localStorage.setItem('theme',isDark?'dark':'light');
+    });
+  })();
+</script>
 </body>
 </html>
