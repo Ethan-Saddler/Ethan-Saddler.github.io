@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Secret Portal 💜</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg1: #ffdfff;
+      --bg2: #f2c7ff;
+      --bg3: #e9a7ff;
+      --ink: #111;
+      --accent: #7a2bbf;
+      --cta: #2b1854;
+    }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      background: radial-gradient(1200px 800px at 50% -10%, var(--bg1) 0%, var(--bg2) 45%, var(--bg3) 100%);
+      overflow: hidden;
+    }
+
+    /* --- PASSWORD CARD --- */
+    .gate-wrap {
+      position: fixed; inset: 0; display: grid; place-items: center;
+      transition: opacity .45s ease, visibility .45s ease;
+      z-index: 10;
+    }
+    .gate-wrap.hidden { opacity: 0; visibility: hidden; }
+
+    .gate-card {
+      width: min(92vw, 520px);
+      background: #fff; border: 2px solid var(--ink);
+      border-radius: 1.25rem; box-shadow: 8px 8px 0 var(--ink);
+      padding: 1.5rem 1.25rem;
+    }
+    .gate-title {
+      display: flex; align-items: center; gap: .6rem;
+      font-weight: 800; font-size: 1.4rem; letter-spacing: .5px;
+    }
+    .heart { font-size: 1.6rem; animation: thump 1.2s infinite; }
+    @keyframes thump { 0%,100%{transform:scale(1)} 15%{transform:scale(1.18)} 30%{transform:scale(1)} }
+
+    .gate-sub { color: #5e3b7a; margin: .35rem 0 1.1rem; font-size: .98rem; }
+
+    .gate-row { display: grid; grid-template-columns: 1fr auto; gap: .6rem; align-items: center; }
+    .gate-input {
+      height: 48px; border-radius: .9rem; border: 2px solid #222;
+      padding: 0 .9rem; font-size: 1.05rem; outline: none;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    .gate-input:focus { border-color: #a100ff; box-shadow: 0 0 0 4px #f1d6ff; }
+
+    .gate-btn {
+      height: 48px; border-radius: .9rem; border: 2px solid var(--ink);
+      background: var(--ink); color: #fff; font-weight: 700; padding: 0 1rem;
+      cursor: pointer; transition: transform .06s, box-shadow .06s, background .15s;
+    }
+    .gate-btn:hover { background: #2a2a2a; }
+    .gate-btn:active { transform: translateY(1px); box-shadow: inset 0 2px 0 rgba(0,0,0,.2); }
+
+    .gate-aux { display: flex; align-items: center; justify-content: space-between; margin-top: .75rem; font-size: .9rem; }
+    .gate-link {
+      background: none; border: none; color: var(--accent); font-weight: 700; cursor: pointer;
+      text-decoration: underline; padding: .25rem .4rem; border-radius: .5rem;
+    }
+    .gate-msg { min-height: 1.25rem; color: #b00020; font-weight: 700; }
+
+    .shake { animation: wiggle .35s ease; }
+    @keyframes wiggle {
+      0%,100% { transform: translateX(0); }
+      20% { transform: translateX(-8px); }
+      40% { transform: translateX(6px); }
+      60% { transform: translateX(-4px); }
+      80% { transform: translateX(2px); }
+    }
+
+    /* --- CELEBRATION TEXT --- */
+    .stage {
+      position: fixed; inset: 0; display: grid; place-items: center; text-align: center;
+      opacity: 0; visibility: hidden; transition: opacity .6s ease, visibility .6s ease;
+      pointer-events: none; z-index: 3;
+    }
+    .stage.show { opacity: 1; visibility: visible; pointer-events: auto; }
+
+    .headline {
+      font-size: clamp(32px, 6vw, 72px);
+      font-weight: 900; color: #2c0046; letter-spacing: 1px;
+      text-shadow: 0 2px 0 #fff, 0 8px 0 #e6c5ff;
+      animation: pop-in .7s ease both;
+    }
+    @keyframes pop-in {
+      from { transform: translateY(20px) scale(.96); opacity: 0; }
+      to   { transform: translateY(0) scale(1); opacity: 1; }
+    }
+    .sub {
+      margin-top: .6rem; font-size: clamp(16px, 2.2vw, 22px); color: #5e3b7a;
+      animation: fadeUp .9s .15s ease both;
+    }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+    .fade-away { animation: fadeAway .8s ease forwards; }
+    @keyframes fadeAway { to { opacity: 0; visibility: hidden; } }
+
+    /* --- FLOATING EMOJI (keeps running forever) --- */
+    .float {
+      position: fixed; bottom: -80px; font-size: clamp(24px, 3.5vw, 40px);
+      filter: drop-shadow(0 2px 0 rgba(0,0,0,.15));
+      animation: rise linear forwards;
+      z-index: 2; /* UNDER photos */
+      pointer-events: none;
+    }
+    @keyframes rise {
+      from { transform: translateY(0) translateX(0) rotate(0deg); opacity: .95; }
+      to   { transform: translateY(-120vh) translateX(var(--drift, 0)) rotate(360deg); opacity: 0; }
+    }
+
+    /* --- SPIN SLIDESHOW (above emojis) --- */
+    .spinshow {
+      position: fixed; inset: 0;
+      pointer-events: none;
+      z-index: 6; /* ABOVE emojis and text */
+      opacity: 0; transition: opacity .6s ease;
+    }
+    .spinshow.show { opacity: 1; }
+
+    .spinpic {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      width: var(--w, 26vw);
+      max-width: 520px;
+      max-height: 55vh;
+      height: auto;
+      object-fit: cover;
+      border-radius: 16px;
+      box-shadow: 0 10px 40px rgba(0,0,0,.25), 0 0 0 6px rgba(255,255,255,.7);
+      opacity: 0;
+      animation-fill-mode: forwards;
+    }
+    .spin-in {
+      animation: spinIn var(--in, 900ms) ease-out forwards, bob 2.4s 1s ease-in-out infinite alternate;
+    }
+    .spin-out {
+      animation: spinOut var(--out, 900ms) ease-in forwards;
+    }
+    @keyframes spinIn {
+      0% { opacity: 0; transform: translate(-50%, calc(-50% + 20vh)) scale(.7) rotate(-270deg); }
+      60% { opacity: 1; transform: translate(-50%, -50%) scale(1.03) rotate(12deg); }
+      100% { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+    }
+    @keyframes bob {
+      from { transform: translate(-50%, -50%) rotate(-1.6deg); }
+      to   { transform: translate(-50%, -50%) rotate(1.6deg); }
+    }
+    @keyframes spinOut {
+      0% { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+      100% { opacity: 0; transform: translate(-50%, calc(-50% - 16vh)) scale(.7) rotate(270deg); }
+    }
+
+    /* --- CONTINUE BUTTON (appears over photos) --- */
+    .cta-wrap {
+      position: fixed; inset: 0; display: grid; place-items: center;
+      z-index: 8; pointer-events: none; opacity: 0; transition: opacity .4s ease;
+    }
+    .cta-wrap.show { opacity: 1; pointer-events: auto; }
+    .cta-btn {
+      background: #fff; color: var(--cta);
+      border: 2px solid var(--cta); border-radius: 999px;
+      padding: .8rem 1.2rem; font-weight: 900; font-size: 1.05rem;
+      box-shadow: 6px 6px 0 rgba(0,0,0,.15);
+      cursor: pointer; display: inline-flex; align-items: center; gap: .5rem;
+      transition: transform .06s ease, box-shadow .06s ease, background .15s ease;
+    }
+    .cta-btn:hover { background: #faf6ff; }
+    .cta-btn:active { transform: translateY(1px); box-shadow: inset 0 2px 0 rgba(0,0,0,.2); }
+
+    /* --- LOVE BOARD (final screen before arrow) --- */
+    .love-board {
+      position: fixed; inset: 0; display: grid; place-items: center;
+      z-index: 9; opacity: 0; visibility: hidden; transition: opacity .6s ease, visibility .6s ease;
+    }
+    .love-board.show { opacity: 1; visibility: visible; }
+
+    .board-card {
+      width: min(92vw, 1000px);
+      background: rgba(255,255,255,.85);
+      border: 2px solid var(--ink);
+      border-radius: 1.25rem;
+      box-shadow: 10px 10px 0 var(--ink);
+      padding: 1.2rem 1rem 1.4rem;
+      backdrop-filter: blur(6px);
+    }
+    .board-title {
+      display:flex; align-items:center; gap:.6rem;
+      font-weight: 900; font-size: clamp(20px,3.2vw,32px); color:#2c0046;
+      margin-bottom: .8rem;
+    }
+    .board-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: .8rem;
+    }
+    .love-btn {
+      display:flex; align-items:center; gap:.5rem;
+      padding: .9rem .9rem;
+      border-radius: 1rem;
+      border: 2px solid #25164a;
+      background: linear-gradient(135deg, #ffe9ff, #e9d2ff);
+      color:#25164a; font-weight: 800;
+      box-shadow: 6px 6px 0 rgba(0,0,0,.12);
+      cursor: pointer;
+      transition: transform .08s ease, box-shadow .08s ease, background .2s ease, opacity .2s ease;
+    }
+    .love-btn:hover { transform: translateY(-1px); box-shadow: 8px 8px 0 rgba(0,0,0,.18); }
+    .love-btn:active { transform: translateY(0); box-shadow: 3px 3px 0 rgba(0,0,0,.18); }
+    .love-btn.clicked { opacity: .8; }
+
+    .toast {
+      position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%);
+      background: #2b1854; color:#fff; padding:.6rem .9rem; border-radius:.7rem;
+      box-shadow: 0 6px 24px rgba(0,0,0,.25);
+      z-index: 10; opacity: 0; transition: opacity .25s ease;
+      font-weight: 700;
+    }
+    .toast.show { opacity: 1; }
+
+    /* --- NEXT ARROW (appears on right) --- */
+    .next-arrow {
+      position: fixed; right: 14px; top: 50%; transform: translateY(-50%) scale(0.96);
+      z-index: 11;
+      width: 62px; height: 62px; border-radius: 50%;
+      border: 2px solid #2b1854; background: #fff;
+      box-shadow: 10px 10px 0 rgba(0,0,0,.15);
+      display: grid; place-items: center; cursor: pointer;
+      opacity: 0; visibility: hidden; transition: opacity .35s ease, visibility .35s ease, transform .15s ease;
+    }
+    .next-arrow.show { opacity: 1; visibility: visible; animation: nudge 1.2s ease-in-out infinite; }
+    .next-arrow:hover { transform: translateY(-50%) scale(1.0); }
+    @keyframes nudge {
+      0%,100% { transform: translateY(-50%) translateX(0); }
+      50% { transform: translateY(-50%) translateX(-4px); }
+    }
+    .next-arrow svg { width: 30px; height: 30px; }
+
+    /* --- FINAL PAGE --- */
+    .final-page {
+    position: fixed; inset: 0;
+    display: flex;               /* was grid */
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;                   /* space between card and button */
+    z-index: 12;
+    opacity: 0; visibility: hidden;
+    transition: opacity .6s ease, visibility .6s ease;
+    }
+    .final-page.show { opacity: 1; visibility: visible; }
+
+    .final-card {
+      width: min(92vw, 840px);
+      background: rgba(255,255,255,.9);
+      border: 2px solid var(--ink);
+      border-radius: 1.25rem;
+      box-shadow: 12px 12px 0 var(--ink);
+      padding: 1.4rem 1.2rem 1.6rem;
+      backdrop-filter: blur(8px);
+      text-align: center;
+    }
+    .final-title {
+      font-weight: 900; font-size: clamp(26px, 4.2vw, 42px); color: #2c0046;
+      margin-bottom: .6rem;
+    }
+    .final-msg {
+      font-size: clamp(16px, 2.2vw, 20px); color: #2b1854; line-height: 1.6;
+    }
+    /* final-page back button */
+    .final-back {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .4s ease, visibility .4s ease;
+    }
+    .final-back.show {
+    opacity: 1;
+    visibility: visible;
+    }
+    /* More space between the final card and the back button */
+    #finalPage {
+    gap: clamp(32px, 8vh, 96px); /* increase as you like */
+    }
+
+    /* Let the container's gap control spacing */
+    #finalBackBtn {
+    margin-top: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Password UI -->
+  <div class="gate-wrap" id="gateWrap">
+    <div class="gate-card" id="gateCard">
+      <div class="gate-title">
+        <span class="heart">💜</span>
+        <span>private area for my favorite person :]]]</span>
+      </div>
+      <div class="gate-sub">enter the secret password O_O</div>
+
+      <div class="gate-row">
+        <input id="gateInput" class="gate-input" type="password" placeholder="i believe in you" aria-label="Password"/>
+        <button id="gateBtn" class="gate-btn" type="button">unlock</button>
+      </div>
+
+      <div class="gate-aux">
+        <button id="hintBtn" class="gate-link" type="button">show hint</button>
+        <div id="gateMsg" class="gate-msg" aria-live="polite"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Celebration Text (fades out; emojis keep running) -->
+  <div class="stage" id="stage">
+    <div id="stageInner">
+      <div class="headline"> 生日快乐, I love you so much! 💖</div>
+      <div class="sub">for my favorite person in the whole world ✨</div>
+    </div>
+  </div>
+
+  <!-- Spin Slideshow Layer (ABOVE emojis) -->
+  <div class="spinshow" id="spinshow"></div>
+
+  <!-- Continue Button -->
+  <div class="cta-wrap" id="ctaWrap">
+    <button class="cta-btn" id="ctaBtn">✨ continue ✨</button>
+  </div>
+
+  <!-- Love Board -->
+  <div class="love-board" id="loveBoard">
+    <div class="board-card">
+      <div class="board-title">a few of the things i adore about you <span>💜</span></div>
+      <div class="board-grid" id="boardGrid"><!-- filled by JS --></div>
+    </div>
+  </div>
+
+  <!-- Tiny toast for button clicks -->
+  <div class="toast" id="toast"></div>
+
+  <!-- Right-side next arrow -->
+  <button class="next-arrow" id="nextArrow" aria-label="Go to the final page">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#2b1854" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M5 12h14"></path>
+      <path d="M13 5l7 7-7 7"></path>
+    </svg>
+  </button>
+
+  <!-- Final page -->
+  <div class="final-page" id="finalPage" aria-live="polite">
+    <div class="final-card">
+      <div class="final-title">happy birthday my pookie 💜</div>
+      <div class="final-msg" id="finalMsg">
+        I love you so so much and am so glad I get to spend another birthday with you. You are the most amazing
+        girlfriend I could ask for and I am so grateful to have you in my life.
+        I cannot wait to experience all the adventures still ahead of us :)))
+        <br><br>
+        Happy 23rd Birthday to my favorite person in the whole world. 💫
+      </div>
+    </div>
+    <button class="cta-btn final-back" id="finalBackBtn">⟲ back to photos</button>
+  </div>
+
+  <script>
+    (function () {
+      // --- CONFIG ---
+      const SECRET = "pookie"; // change password (case-insensitive)
+      const IMAGES = [
+        "img/random/1.jpg","img/random/2.jpg","img/random/3.jpg","img/random/4.jpg","img/random/5.jpg",
+        "img/random/6.jpg","img/random/7.jpg","img/random/8.jpg","img/random/9.jpg","img/random/10.jpg",
+        "img/random/11.jpg","img/random/12.jpg","img/random/13.jpg","img/random/14.jpg","img/random/15.jpg",
+        "img/random/16.jpg","img/random/17.jpg","img/random/18.jpg","img/random/19.jpg","img/random/20.jpg",
+        "img/random/21.jpg","img/random/22.jpg","img/random/23.jpg","img/random/24.jpg","img/random/25.jpg",
+        "img/random/26.jpg","img/random/27.jpg","img/random/28.jpg","img/random/29.jpg","img/random/30.jpg",
+        "img/random/31.jpg","img/random/32.jpg","img/random/33.jpg","img/random/34.jpg","img/random/35.jpg",
+        "img/random/36.jpg","img/random/37.jpg","img/random/38.jpg","img/random/39.jpg","img/random/40.jpg",
+        "img/random/41.jpg","img/random/42.jpg","img/random/43.jpg","img/random/44.jpg"
+        ];
+
+
+      // Buttons for the final board (edit these!)
+      const LOVE_BUTTONS = [
+        { title: "your face", note: "its the most perfect in the world" },
+        { title: "your laugh", note: "it makes me happy to hear you happy" },
+        { title: "your style", note: "pok always got the most fire fits" },
+        { title: "your monolouges", note: "i could listen to you talk for hours" },
+        { title: "your love", note: "makes me feel amazing" },
+        { title: "how you care", note: "for both me and the gats" },
+        { title: "how you listen", note: "and make me feel heard :)" },
+        { title: "how you smile", note: "it makes you especially cute" },
+        { title: "how you clash", note: "pok is goated" },
+        { title: "how you support me", note: "it makes everything easiest knowing you are there" },
+      ];
+
+      // timings
+      const HEADLINE_HOLD_MS = 3600;    // longer headline duration
+      const IN_MS = 900;                // spin-in duration
+      const HOLD_MS = 2200;             // photo bob time
+      const OUT_MS = 900;               // spin-out duration
+      const GAP_MS = 250;               // overlap
+      const SLIDESHOW_CTA_DELAY_MS = 10000; // show continue button after ~10s
+
+      // sizes (smaller)
+      const SIZE_MIN_VW = 18;
+      const SIZE_MAX_VW = 28;
+
+      // random position margins & de-overlap
+      const MARGIN_VW = 8;
+      const MARGIN_VH = 10;
+      const MIN_DIST_VW = 16;
+      const MIN_DIST_VH = 10;
+
+      // --- NEW: arrow threshold ---
+      const ARROW_THRESHOLD = 4; // number of UNIQUE buttons to click before arrow appears
+
+      // --- ELEMENTS ---
+      const input = document.getElementById("gateInput");
+      const btn = document.getElementById("gateBtn");
+      const hintBtn = document.getElementById("hintBtn");
+      const msg = document.getElementById("gateMsg");
+      const card = document.getElementById("gateCard");
+      const wrap = document.getElementById("gateWrap");
+      const stage = document.getElementById("stage");
+      const stageInner = document.getElementById("stageInner");
+      const spinshow = document.getElementById("spinshow");
+      const ctaWrap = document.getElementById("ctaWrap");
+      const ctaBtn = document.getElementById("ctaBtn");
+      const loveBoard = document.getElementById("loveBoard");
+      const boardGrid = document.getElementById("boardGrid");
+      const toast = document.getElementById("toast");
+      const nextArrow = document.getElementById("nextArrow");
+      const finalPage = document.getElementById("finalPage");
+      const finalBackBtn = document.getElementById("finalBackBtn");
+
+      const hints = [
+        "keep clicking the 'show hint' button for more hints",
+        "it's the og thing we call eachother",
+        "lowercase…",
+        "starts with a ‘p’",
+        "ends with 'ie'",
+        "it is the full extended version of the word",
+        "i doubt you need this many hints",
+        "why you still reading",
+        "ily <3",
+      ];
+      let hintIdx = 0;
+
+      setTimeout(() => input && input.focus(), 120);
+
+      function normalize(s) { return (s || "").trim().toLowerCase(); }
+
+      const WRONG_MESSAGES = [
+        "incorrect :(",
+        "sry not right",
+        "maybe try asking for a hint :)",
+        "another try?",
+        "go ask gat for some help",
+        ];
+
+      function wrong() {
+        const randomMsg = WRONG_MESSAGES[Math.floor(Math.random() * WRONG_MESSAGES.length)];
+        msg.textContent = randomMsg;
+
+        card.classList.remove("shake");
+        void card.offsetWidth; // retrigger CSS animation
+        card.classList.add("shake");
+        }
+
+
+      function tryUnlock() {
+        const val = normalize(input.value);
+        if (!val) { msg.textContent = "uh the password is not nothing"; return; }
+        if (val === normalize(SECRET)) startCelebration();
+        else wrong();
+      }
+
+      btn.addEventListener("click", tryUnlock);
+      input.addEventListener("keydown", (e) => { if (e.key === "Enter") tryUnlock(); });
+      hintBtn.addEventListener("click", () => {
+        msg.textContent = "hint: " + hints[hintIdx % hints.length];
+        hintIdx++;
+      });
+      window.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") { input.value = ""; msg.textContent = ""; }
+      });
+
+      /* --- Celebration: confetti + nonstop emojis + headline, then photos --- */
+      function startCelebration() {
+        wrap.classList.add("hidden");
+        setTimeout(() => {
+          stage.classList.add("show");
+          confettiBurst(52);
+          startFloatingEmojis(); // never stops
+          setTimeout(() => {
+            stageInner.classList.add("fade-away"); // text fades out
+            setTimeout(() => beginSpinSlideshow(true), 350);   // start photos above emojis
+          }, HEADLINE_HOLD_MS);
+        }, 420);
+      }
+
+      function confettiBurst(n) {
+        const layer = document.createElement("div");
+        layer.style.position = "fixed";
+        layer.style.inset = "0";
+        layer.style.pointerEvents = "none";
+        layer.style.overflow = "hidden";
+        layer.style.zIndex = 7;
+        document.body.appendChild(layer);
+
+        for (let i = 0; i < n; i++) {
+          const c = document.createElement("div");
+          c.style.position = "absolute";
+          c.style.width = "8px";
+          c.style.height = "14px";
+          c.style.left = Math.random() * 100 + "vw";
+          c.style.top = "-20px";
+          c.style.borderRadius = "3px";
+          c.style.background = `hsl(${Math.floor(Math.random()*360)}, 90%, 60%)`;
+          c.style.transform = `rotate(${Math.random()*360}deg)`;
+          c.style.transition = "transform 1s ease-out, top 1s ease-out, opacity .9s ease-out";
+          layer.appendChild(c);
+          requestAnimationFrame(() => {
+            c.style.top = 100 + Math.random() * 10 + "vh";
+            c.style.transform += ` translateY(${80 + Math.random()*40}vh) rotate(${360 + Math.random()*360}deg)`;
+            c.style.opacity = "0";
+          });
+        }
+        setTimeout(() => layer.remove(), 1300);
+      }
+
+      /* emojis keep spawning forever (each removes itself after duration) */
+      function startFloatingEmojis() {
+        const EMOJIS = ["🎈","💖","🎉","💝","✨","💗","🎀","💞"];
+        function spawn() {
+          const e = document.createElement("div");
+          e.className = "float";
+          e.textContent = EMOJIS[Math.floor(Math.random()*EMOJIS.length)];
+          e.style.left = Math.random() * 100 + "vw";
+          e.style.setProperty("--drift", (Math.random() * 40 - 20) + "vw");
+          const dur = 3.2 + Math.random() * 2.6;
+          e.style.animationDuration = dur + "s";
+          document.body.appendChild(e);
+          setTimeout(() => e.remove(), dur * 1000 + 300);
+          setTimeout(spawn, 140 + Math.random()*240);
+        }
+        for (let i = 0; i < 10; i++) setTimeout(spawn, i * 120);
+      }
+
+      /* --- Spin Slideshow with random positions + basic de-overlap --- */
+      let lastPos = null; // {xvw, yvh}
+      let slideshowRunning = false;
+      const tHandles = new Set();
+
+      function randomPositionAvoidingLast() {
+        const minX = 0 + MARGIN_VW;
+        const maxX = 100 - MARGIN_VW;
+        const minY = 0 + MARGIN_VH;
+        const maxY = 100 - MARGIN_VH;
+
+        let tries = 0, xvw, yvh;
+        do {
+          xvw = Math.random() * (maxX - minX) + minX;
+          yvh = Math.random() * (maxY - minY) + minY;
+          tries++;
+        } while (
+          lastPos &&
+          distanceVWVH({xvw, yvh}, lastPos) < Math.hypot(MIN_DIST_VW, MIN_DIST_VH) &&
+          tries < 8
+        );
+
+        lastPos = { xvw, yvh };
+        return lastPos;
+      }
+
+      function distanceVWVH(a, b) {
+        const dx = a.xvw - b.xvw;
+        const dy = a.yvh - b.yvh;
+        return Math.hypot(dx, dy);
+      }
+
+      // withCTA = true for the first run; false when returning from final page (no continue button)
+      function beginSpinSlideshow(withCTA = true) {
+        if (!IMAGES.length) return;
+        slideshowRunning = true;
+        spinshow.classList.add("show");
+
+        // NEW: make a shuffled copy so refreshes get a new order
+        const order = IMAGES.slice();
+        shuffleInPlace(order);
+
+        // prefetch first few (from shuffled order)
+        order.slice(0, 3).forEach(src => { const i = new Image(); i.src = src; });
+
+        let idx = 0;
+
+        if (withCTA) {
+            const showCTAHandle = setTimeout(() => {
+            if (slideshowRunning) ctaWrap.classList.add("show");
+            }, SLIDESHOW_CTA_DELAY_MS);
+            tHandles.add(showCTAHandle);
+        } else {
+            ctaWrap.classList.remove("show");
+        }
+
+        function next() {
+            if (!slideshowRunning) return;
+
+            const src = order[idx % order.length];
+            const el = document.createElement("img");
+            el.className = "spinpic";
+            el.src = src;
+
+            const w = (Math.random() * (SIZE_MAX_VW - SIZE_MIN_VW) + SIZE_MIN_VW).toFixed(1) + "vw";
+            el.style.setProperty("--w", w);
+            el.style.setProperty("--in", IN_MS + "ms");
+            el.style.setProperty("--out", OUT_MS + "ms");
+
+            const { xvw, yvh } = randomPositionAvoidingLast();
+            el.style.left = xvw + "vw";
+            el.style.top  = yvh + "vh";
+
+            el.style.borderRadius = Math.random() < 0.5 ? "12px" : "20px";
+            spinshow.appendChild(el);
+
+            el.classList.add("spin-in");
+
+            const h1 = setTimeout(() => {
+            el.classList.remove("spin-in");
+            el.classList.add("spin-out");
+            const h2 = setTimeout(() => el.remove(), OUT_MS + 80);
+            tHandles.add(h2);
+            }, IN_MS + HOLD_MS);
+            tHandles.add(h1);
+
+            const h3 = setTimeout(next, Math.max(110, (IN_MS + HOLD_MS - OUT_MS + GAP_MS) / 2));
+            tHandles.add(h3);
+
+            idx++;
+
+            // Optional: reshuffle when we loop back to the start to avoid same cycle
+            if (idx % order.length === 0) shuffleInPlace(order);
+
+            const preload = new Image();
+            preload.src = order[idx % order.length];
+        }
+
+        next();
+        }
+
+      function stopSlideshowAndShowBoard() {
+        slideshowRunning = false;
+        ctaWrap.classList.remove("show");
+
+        // clear timeouts and remove all current photos
+        tHandles.forEach(h => clearTimeout(h));
+        tHandles.clear();
+        document.querySelectorAll('.spinpic').forEach(n => n.remove());
+        spinshow.classList.remove("show");
+
+        // build love board buttons
+        boardGrid.innerHTML = "";
+        LOVE_BUTTONS.forEach((item, i) => {
+          const b = document.createElement("button");
+          b.className = "love-btn";
+          b.setAttribute("aria-pressed", "false");
+          b.dataset.index = i;
+          b.innerHTML = `💟 <span>${item.title}</span>`;
+          b.addEventListener("click", () => {
+            if (!b.dataset.clicked) {
+              b.dataset.clicked = "1";
+              b.classList.add("clicked");
+              b.setAttribute("aria-pressed", "true");
+              markClickAndMaybeShowArrow();
+            }
+            showToast(item.note || item.title);
+          });
+          boardGrid.appendChild(b);
+        });
+
+        loveBoard.classList.add("show");
+      }
+
+    // put this near your other module-level vars
+    let toastHideHandle = null;
+
+    function showToast(text, ms = 5000) {
+    // update text
+    toast.textContent = text;
+
+    // restart the fade-in animation in case we're clicking fast
+    toast.classList.remove('show');
+    // force reflow so the class re-add retriggers the CSS transition
+    void toast.offsetWidth;
+    toast.classList.add('show');
+
+    // clear any previous hide timer and start a fresh one
+    if (toastHideHandle) clearTimeout(toastHideHandle);
+    toastHideHandle = setTimeout(() => {
+        toast.classList.remove('show');
+        toastHideHandle = null;
+    }, ms);
+    }
+
+      ctaBtn.addEventListener("click", stopSlideshowAndShowBoard);
+
+      // --- Track unique clicks & reveal arrow ---
+      let uniqueClicks = 0;
+      function markClickAndMaybeShowArrow() {
+        uniqueClicks++;
+        if (uniqueClicks >= ARROW_THRESHOLD) {
+          nextArrow.classList.add("show");
+        }
+      }
+
+      // --- Arrow -> Final page transition (arrow disappears on final) ---
+      nextArrow.addEventListener("click", () => {
+        // fade out love board
+        loveBoard.classList.remove("show");
+
+        // hide the arrow immediately
+        nextArrow.classList.remove("show");
+
+        // show final page after a tiny delay
+        setTimeout(() => {
+          finalPage.classList.add("show");
+
+          // reveal "back to photos" after a short pause
+          setTimeout(() => {
+            finalBackBtn.classList.add("show");
+          }, 10000); // tweak delay here (ms)
+        }, 250);
+      });
+
+      // --- Back to photos (no CTA; runs indefinitely) ---
+      finalBackBtn.addEventListener("click", () => {
+        // hide final screen & its back button
+        finalBackBtn.classList.remove("show");
+        finalPage.classList.remove("show");
+
+        // ensure any timers from other phases are cleared
+        tHandles.forEach(h => clearTimeout(h));
+        tHandles.clear();
+
+        // start the collage again WITHOUT the continue button (infinite loop)
+        beginSpinSlideshow(false);
+      });
+
+    })();
+    function shuffleInPlace(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    }
+
+  </script>
+</body>
+</html>

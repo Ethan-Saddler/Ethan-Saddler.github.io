@@ -1,235 +1,255 @@
 <!DOCTYPE html>
 <html lang="zxx">
 <head>
-	<title>etharah</title>
-	<meta charset="UTF-8">
-	<meta name="keywords" content="photo, html">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<!-- Stylesheets -->
-	<link rel="stylesheet" href="css/bootstrap.min.css"/>
-	<link rel="stylesheet" href="css/font-awesome.min.css"/>
-	<link rel="stylesheet" href="css/slicknav.min.css"/>
-	<link rel="stylesheet" href="css/fresco.css"/>
-	<link rel="stylesheet" href="css/slick.css"/>
+  <title>etharah</title>
+  <meta charset="UTF-8">
+  <meta name="keywords" content="photo, html">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="css/font-awesome.min.css"/>
+  <link rel="stylesheet" href="css/slicknav.min.css"/>
+  <link rel="stylesheet" href="css/fresco.css"/>
+  <link rel="stylesheet" href="css/slick.css"/>
+  <!-- Main Stylesheets -->
+  <link rel="stylesheet" href="css/style.css"/>
 
-	<!-- Main Stylesheets -->
-	<link rel="stylesheet" href="css/style.css"/>
-
-
-	<!--[if lt IE 9]>
-		<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-		<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-	<![endif]-->
-
+  <style>
+    /* Floating "Birthday Surprise" button */
+    .surprise-fab {
+      position: fixed; right: 18px; bottom: 18px; z-index: 9998;
+      display: inline-flex; align-items: center; gap: .5rem;
+      background: #111; color: #fff; border: 2px solid #111;
+      border-radius: 999px; padding: .7rem 1rem; font-weight: 800;
+      text-decoration: none; box-shadow: 6px 6px 0 #00000055;
+      transition: transform .06s ease, box-shadow .06s ease, background .15s ease;
+    }
+    .surprise-fab:hover { background: #2a2a2a; }
+    .surprise-fab:active { transform: translateY(1px); box-shadow: inset 0 2px 0 rgba(0,0,0,.2); }
+  </style>
 </head>
 <body style="background-color:#f2c7ff ">
-	<!-- Page Preloder -->
-	<div id="preloder">
-		<div class="loader"></div>
-	</div>
+  <!-- Page Preloder -->
+  <div id="preloder">
+    <div class="loader"></div>
+  </div>
 
+  <!-- Hero Section -->
+  <section class="hero__section">
+    <div class="hero-slider">
+      <div class="slide-item">
+        <a class="fresco" href="img/hero-slider/1.jpg" data-fresco-group="projects">
+          <img src="img/hero-slider/1.jpg" alt="">
+        </a>
+      </div>
+      <div class="slide-item">
+        <a class="fresco" href="img/hero-slider/2.jpg" data-fresco-group="projects">
+          <img src="img/hero-slider/2.jpg" alt="">
+        </a>
+      </div>
+      <div class="slide-item">
+        <a class="fresco" href="img/hero-slider/3.jpg" data-fresco-group="projects">
+          <img src="img/hero-slider/3.jpg" alt="">
+        </a> 
+      </div>
+      <div class="slide-item">
+        <a class="fresco" href="img/hero-slider/4.jpg" data-fresco-group="projects">
+          <img src="img/hero-slider/4.jpg" alt="">
+        </a> 
+      </div>
+      <div class="slide-item">
+        <a class="fresco" href="img/hero-slider/5.jpg" data-fresco-group="projects">
+          <img src="img/hero-slider/5.jpg" alt="">
+        </a> 
+      </div>
+      <div class="slide-item">
+        <a class="fresco" href="img/hero-slider/7.jpg" data-fresco-group="projects">
+          <img src="img/hero-slider/7.jpg" alt="">
+        </a> 
+      </div>
+      <div class="slide-item">
+        <a class="fresco" href="img/hero-slider/8.jpg" data-fresco-group="projects">
+          <img src="img/hero-slider/8.jpg" alt="">
+        </a> 
+      </div>
+      <div class="slide-item">
+        <a class="fresco" href="img/hero-slider/9.jpg" data-fresco-group="projects">
+          <img src="img/hero-slider/9.jpg" alt="">
+        </a> 
+      </div>
+      <div class="slide-item">
+        <a class="fresco" href="img/hero-slider/10.jpg" data-fresco-group="projects">
+          <img src="img/hero-slider/10.jpg" alt="">
+        </a> 
+      </div>
+      <div class="slide-item">
+        <a class="fresco" href="img/hero-slider/11.jpg" data-fresco-group="projects">
+          <img src="img/hero-slider/11.jpg" alt="">
+        </a> 
+      </div>
+      <div class="slide-item">
+        <a class="fresco" href="img/hero-slider/12.jpg" data-fresco-group="projects">
+          <img src="img/hero-slider/12.jpg" alt="">
+        </a> 
+      </div>
+      <div class="slide-item">
+        <a class="fresco" href="img/hero-slider/13.jpg" data-fresco-group="projects">
+          <img src="img/hero-slider/13.jpg" alt="">
+        </a> 
+      </div>
+      <div class="slide-item">
+        <a class="fresco" href="img/hero-slider/14.jpg" data-fresco-group="projects">
+          <img src="img/hero-slider/14.jpg" alt="">
+        </a> 
+      </div>
+      <div class="slide-item">
+        <a class="fresco" href="img/hero-slider/15.jpg" data-fresco-group="projects">
+          <img src="img/hero-slider/15.jpg" alt="">
+        </a> 
+      </div>
+      <div class="slide-item">
+        <a class="fresco" href="img/hero-slider/16.jpg" data-fresco-group="projects">
+          <img src="img/hero-slider/16.jpg" alt="">
+        </a> 
+      </div>
+      <div class="slide-item">
+        <a class="fresco" href="img/hero-slider/19.jpg" data-fresco-group="projects">
+          <img src="img/hero-slider/19.jpg" alt="">
+        </a> 
+      </div>
+      <div class="slide-item">
+        <a class="fresco" href="img/hero-slider/18.jpg" data-fresco-group="projects">
+          <img src="img/hero-slider/18.jpg" alt="">
+        </a> 
+      </div>
+      <div class="slide-item">
+        <a class="fresco" href="img/hero-slider/17.jpg" data-fresco-group="projects">
+          <img src="img/hero-slider/17.jpg" alt="">
+        </a> 
+      </div>
+    </div>
 
-	<!-- Hero Section -->
-	<section class="hero__section">
-		<div class="hero-slider">
-			<div class="slide-item">
-				<a class="fresco" href="img/hero-slider/1.jpg" data-fresco-group="projects">
-					<img src="img/hero-slider/1.jpg" alt="">
-				</a>
-			</div>
-			<div class="slide-item">
-				<a class="fresco" href="img/hero-slider/2.jpg" data-fresco-group="projects">
-					<img src="img/hero-slider/2.jpg" alt="">
-					</a>
-			</div>
-			<div class="slide-item">
-				<a class="fresco" href="img/hero-slider/3.jpg" data-fresco-group="projects">
-					<img src="img/hero-slider/3.jpg" alt="">
-				</a>	
-			</div>
-			<div class="slide-item">
-				<a class="fresco" href="img/hero-slider/4.jpg" data-fresco-group="projects">
-					<img src="img/hero-slider/4.jpg" alt="">
-				</a>	
-			</div>
-			<div class="slide-item">
-				<a class="fresco" href="img/hero-slider/5.jpg" data-fresco-group="projects">
-					<img src="img/hero-slider/5.jpg" alt="">
-				</a>	
-			</div>
-			<div class="slide-item">
-				<a class="fresco" href="img/hero-slider/7.jpg" data-fresco-group="projects">
-					<img src="img/hero-slider/7.jpg" alt="">
-				</a>	
-			</div>
-		<div class="slide-item">
-			<a class="fresco" href="img/hero-slider/8.jpg" data-fresco-group="projects">
-				<img src="img/hero-slider/8.jpg" alt="">
-			</a>	
-		</div>
-		<div class="slide-item">
-			<a class="fresco" href="img/hero-slider/9.jpg" data-fresco-group="projects">
-				<img src="img/hero-slider/9.jpg" alt="">
-			</a>	
-		</div>
-		<div class="slide-item">
-			<a class="fresco" href="img/hero-slider/10.jpg" data-fresco-group="projects">
-				<img src="img/hero-slider/10.jpg" alt="">
-			</a>	
-		</div>
-		<div class="slide-item">
-			<a class="fresco" href="img/hero-slider/11.jpg" data-fresco-group="projects">
-				<img src="img/hero-slider/11.jpg" alt="">
-			</a>	
-		</div>
-		<div class="slide-item">
-			<a class="fresco" href="img/hero-slider/12.jpg" data-fresco-group="projects">
-				<img src="img/hero-slider/12.jpg" alt="">
-			</a>	
-		</div>
-		<div class="slide-item">
-			<a class="fresco" href="img/hero-slider/13.jpg" data-fresco-group="projects">
-				<img src="img/hero-slider/13.jpg" alt="">
-			</a>	
-		</div>
-		<div class="slide-item">
-			<a class="fresco" href="img/hero-slider/14.jpg" data-fresco-group="projects">
-				<img src="img/hero-slider/14.jpg" alt="">
-			</a>	
-		</div>
-		<div class="slide-item">
-			<a class="fresco" href="img/hero-slider/15.jpg" data-fresco-group="projects">
-				<img src="img/hero-slider/15.jpg" alt="">
-			</a>	
-		</div>
-		<div class="slide-item">
-			<a class="fresco" href="img/hero-slider/16.jpg" data-fresco-group="projects">
-				<img src="img/hero-slider/16.jpg" alt="">
-			</a>	
-		</div>
-		<div class="slide-item">
-			<a class="fresco" href="img/hero-slider/19.jpg" data-fresco-group="projects">
-				<img src="img/hero-slider/19.jpg" alt="">
-			</a>	
-		</div>
-		<div class="slide-item">
-			<a class="fresco" href="img/hero-slider/18.jpg" data-fresco-group="projects">
-				<img src="img/hero-slider/18.jpg" alt="">
-			</a>	
-		</div>
-		<div class="slide-item">
-			<a class="fresco" href="img/hero-slider/17.jpg" data-fresco-group="projects">
-				<img src="img/hero-slider/17.jpg" alt="">
-			</a>	
-		</div>
+    <div class="hero-text-slider">
+      <div class="text-item">
+        <h2>Spongebob</h2>
+        <p>shrooms + spongebob + fish pretty funny</p>
+      </div>
+      <div class="text-item">
+        <h2>nom</h2>
+        <p>why you always trying to eat me but dont actually do it</p>
+      </div>
+      <div class="text-item">
+        <h2>heart</h2>
+        <p>heart </p>
+      </div>
+      <div class="text-item">
+        <h2>the drip</h2>
+        <p>you look dumbfounded at me wearing color and its pretty funny</p>
+      </div>
+      <div class="text-item"><h2>nothing needed</h2></div>
+      <div class="text-item">
+        <h2>stalking</h2>
+        <p>do it more <i class="fa fa-heart" aria-hidden="true"></i> </p>
+      </div>
+      <div class="text-item">
+        <h2>you trying to eat me again</h2>
+        <p>i thought you were gonna do it this time</p>
+      </div>
+      <div class="text-item">
+        <h2>fuked up</h2>
+        <p>you still look really cute tho :)</p>
+      </div>
+      <div class="text-item">
+        <h2>horrifying</h2>
+        <p>you trying to convert me back to hs</p>
+      </div>
+      <div class="text-item">
+        <h2>weeeeeeeeee</h2>
+        <p>(sorry)</p>
+      </div>
+      <div class="text-item"><h2>idek its funny</h2><p></p></div>
+      <div class="text-item"><h2>first day official :D</h2><p>im getting mogged so hard</p></div>
+      <div class="text-item"><h2>us in 10 years</h2><p>jk (unless)</p></div>
+      <div class="text-item"><h2>us in 20 years</h2><p>jk (unless)</p></div>
+      <div class="text-item"><h2>bagel</h2><p>ik you hate this but its prolly my fav</p></div>
+      <div class="text-item"><h2>im ur slave <3</h2><p></p></div>
+      <div class="text-item"><h2>bringing home the child</h2><p>and me carrying the furniture like a manly man</p></div>
+      <div class="text-item"><h2>top tier kiss</h2><p>also i look huge</p></div>
+    </div>
+  </section>
+  <!-- Hero Section end -->
 
-		</div>
-		<div class="hero-text-slider">
-			<div class="text-item">
-				<h2>Spongebob</h2>
-				<p>shrooms + spongebob + fish pretty funny</p>
-			</div>
-			<div class="text-item">
-				<h2>nom</h2>
-				<p>why you always trying to eat me but dont actually do it</p>
-			</div>
-			<div class="text-item">
-				<h2>heart</h2>
-				<p>heart </p>
-			</div>
-			<div class="text-item">
-				<h2>the drip</h2>
-				<p>you look dumbfounded at me wearing color and its pretty funny</p>
-			</div>
-			<div class="text-item">
-				<h2>nothing needed</h2>
-			</div>
-			<div class="text-item">
-				<h2>stalking</h2>
-				<p>do it more <i class="fa fa-heart" aria-hidden="true"></i> </p>
-			</div>
-			<div class="text-item">
-				<h2>you trying to eat me again</h2>
-				<p>i thought you were gonna do it this time</p>
-			</div>
-			<div class="text-item">
-				<h2>fuked up</h2>
-				<p>you still look really cute tho :)</p>
-			</div>
-			<div class="text-item">
-				<h2>horrifying</h2>
-				<p>you trying to convert me back to hs</p>
-			</div>
-			<div class="text-item">
-				<h2>weeeeeeeeee</h2>
-				<p>(sorry)</p>
-			</div>
-			<div class="text-item">
-				<h2>idek its funny</h2>
-				<p></p>
-			</div>
-			<div class="text-item">
-				<h2>first day official :D</h2>
-				<p>im getting mogged so hard</p>
-			</div>
-			<div class="text-item">
-				<h2>us in 10 years</h2>
-				<p>jk (unless)</p>
-			</div>
-			<div class="text-item">
-				<h2>us in 20 years</h2>
-				<p>jk (unless)</p>
-			</div>
-			<div class="text-item">
-				<h2>bagel</h2>
-				<p>ik you hate this but its prolly my fav</p>
-			</div>
-			<div class="text-item">
-				<h2>im ur slave <3</h2>
-				<p></p>
-			</div>
-			<div class="text-item">
-				<h2>bringing home the child</h2>
-				<p>and me carrying the furniture like a manly man</p>
-			</div>
-			<div class="text-item">
-				<h2>top tier kiss</h2>
-				<p>also i look huge</p>
-			</div>
+  <!-- Footer Section -->
+  <footer class="footer__section">
+    <div class="container">
+      <div class="footer__copyright__text">
+        <p>My favorite pics w pookie <i class="fa fa-heart" aria-hidden="true"></i> </p>
+      </div>
+    </div>
+  </footer>
+  <!-- Footer Section end -->
 
-		</div>
-	</section>
-	<!-- Hero Section end -->
+  <!-- Floating button to password page -->
+  <a class="surprise-fab" href="gate.html" aria-label="Open birthday surprise">
+    🎁 Birthday Surprise
+  </a>
 
-	<!-- Footer Section -->
-	<footer class="footer__section">
-		<div class="container">
-			<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-			<div class="footer__copyright__text">
-				<p>My favorite pics w pookie <i class="fa fa-heart" aria-hidden="true"></i> </p>
-			</div>
-			<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-		</div>
-	</footer>
-	<!-- Footer Section end -->
+  <!-- Search Begin -->
+  <div class="search-model">
+    <div class="h-100 d-flex align-items-center justify-content-center">
+      <div class="search-close-switch">+</div>
+      <form class="search-model-form">
+        <input type="text" id="search-input" placeholder="Search here.....">
+      </form>
+    </div>
+  </div>
+  <!-- Search End -->
 
-	<!-- Search Begin -->
-	<div class="search-model">
-		<div class="h-100 d-flex align-items-center justify-content-center">
-			<div class="search-close-switch">+</div>
-			<form class="search-model-form">
-				<input type="text" id="search-input" placeholder="Search here.....">
-			</form>
-		</div>
-	</div>
-	<!-- Search End -->
+  <!--====== Javascripts & Jquery ======-->
+  <script src="js/vendor/jquery-3.2.1.min.js"></script>
+  <script src="js/jquery.slicknav.min.js"></script>
+  <script src="js/slick.min.js"></script>
+  <script src="js/fresco.min.js"></script>
+  <script src="js/main.js"></script>
 
-	<!--====== Javascripts & Jquery ======-->
-	<script src="js/vendor/jquery-3.2.1.min.js"></script>
-	<script src="js/jquery.slicknav.min.js"></script>
-	<script src="js/slick.min.js"></script>
-	<script src="js/fresco.min.js"></script>
-	<script src="js/main.js"></script>
+  <!-- Optional: mini confetti if returned with ?surprise=1 -->
+  <script>
+    (function () {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("surprise") === "1") {
+        const burst = document.createElement("div");
+        burst.style.position = "fixed";
+        burst.style.inset = "0";
+        burst.style.pointerEvents = "none";
+        burst.style.overflow = "hidden";
+        document.body.appendChild(burst);
 
-	</body>
+        const N = 50;
+        for (let i = 0; i < N; i++) {
+          const piece = document.createElement("div");
+          piece.style.position = "absolute";
+          piece.style.width = "8px";
+          piece.style.height = "14px";
+          piece.style.left = Math.random() * 100 + "vw";
+          piece.style.top = "-20px";
+          piece.style.borderRadius = "3px";
+          piece.style.background = `hsl(${Math.floor(Math.random()*360)}, 90%, 60%)`;
+          piece.style.transform = `rotate(${Math.random()*360}deg)`;
+          piece.style.transition = "transform 1s ease-out, top 1s ease-out, opacity .9s ease-out";
+          burst.appendChild(piece);
+          requestAnimationFrame(() => {
+            piece.style.top = 100 + Math.random() * 10 + "vh";
+            piece.style.transform += ` translateY(${80 + Math.random()*40}vh) rotate(${360 + Math.random()*360}deg)`;
+            piece.style.opacity = "0";
+          });
+        }
+        setTimeout(() => burst.remove(), 1300);
+        // Clean URL
+        const url = new URL(window.location);
+        url.searchParams.delete("surprise");
+        window.history.replaceState({}, "", url);
+      }
+    })();
+  </script>
+</body>
 </html>
